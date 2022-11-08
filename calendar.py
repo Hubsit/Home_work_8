@@ -1,86 +1,45 @@
 from datetime import datetime, timedelta
 
 
-days_name = {
-   0: 'Monday',
-   1: 'Tuesday',
-   2: 'Wednesday',
-   3: 'Thursday',
-   4: 'Friday',
-   5: 'Saturday',
-   6: 'Sunday',
+users_birth_week_day = {
+    "Monday": [],
+    "Tuesday": [],
+    "Wednesday": [],
+    "Thursday": [],
+    "Friday": []
 }
 
-monday = []
-tuesday = []
-wednesday = []
-thursday = []
-friday = []
+hollidays_interval = {5: 6, 6: 5}
 
 
 def birthday(users: list):
     current_date = datetime.now()
-    max_date = current_date + timedelta(days=7)
+    if current_date.weekday() in hollidays_interval.keys():
+        interval = hollidays_interval.get(current_date.weekday())
+    else:
+        interval = 7
+    max_date = current_date + timedelta(days=interval)
 
     for user in users:
         birthday_date = user['birthday']
         this_year_birthday = datetime(current_date.year, birthday_date.month, birthday_date.day)
         if current_date < this_year_birthday <= max_date:
-            birth_week_day = this_year_birthday.weekday()
-            if birth_week_day == 0 or birth_week_day == 5 or birth_week_day == 6:
-                monday.append(user['name'])
-            if birth_week_day == 1:
-                tuesday.append(user['name'])
-            if birth_week_day == 2:
-                wednesday.append(user['name'])
-            if birth_week_day == 3:
-                thursday.append(user['name'])
-            if birth_week_day == 4:
-                friday.append(user['name'])
+            birth_week_day = this_year_birthday.strftime("%A")
+            if birth_week_day in ['Saturday', 'Sunday']:
+                birth_week_day = 'Monday'
+            users_birth_week_day.get(birth_week_day).append(user.get('name'))
         else:
             continue
+
     print_birth_day()
 
 
 def print_birth_day():
 
-    current_week_day = datetime.now().weekday()
-    monday_users = ', '.join(monday)
-    tuesday_users = ', '.join(tuesday)
-    wednesday_users = ', '.join(wednesday)
-    thursday_users = ', '.join(thursday)
-    friday_users = ', '.join(friday)
-
-    if current_week_day == 0:
-        print(f'{days_name[1]}: {tuesday_users}')
-        print(f'{days_name[2]}: {wednesday_users}')
-        print(f'{days_name[3]}: {thursday_users}')
-        print(f'{days_name[4]}: {friday_users}')
-        print(f'{days_name[0]}: {monday_users}')
-    elif current_week_day == 1:
-        print(f'{days_name[2]}: {wednesday_users}')
-        print(f'{days_name[3]}: {thursday_users}')
-        print(f'{days_name[4]}: {friday_users}')
-        print(f'{days_name[0]}: {monday_users}')
-        print(f'{days_name[1]}: {tuesday_users}')
-    elif current_week_day == 2:
-        print(f'{days_name[3]}: {thursday_users}')
-        print(f'{days_name[4]}: {friday_users}')
-        print(f'{days_name[0]}: {monday_users}')
-        print(f'{days_name[1]}: {tuesday_users}')
-        print(f'{days_name[2]}: {wednesday_users}')
-    elif current_week_day == 3:
-        print(f'{days_name[4]}: {friday_users}')
-        print(f'{days_name[0]}: {monday_users}')
-        print(f'{days_name[1]}: {tuesday_users}')
-        print(f'{days_name[2]}: {wednesday_users}')
-        print(f'{days_name[3]}: {thursday_users}')
-    else:
-        print(f'{days_name[0]}: {monday_users}')
-        print(f'{days_name[1]}: {tuesday_users}')
-        print(f'{days_name[2]}: {wednesday_users}')
-        print(f'{days_name[3]}: {thursday_users}')
-        print(f'{days_name[4]}: {friday_users}')
+    # current_week_day = datetime.now().weekday()
+    for key, value in users_birth_week_day.items():
+        if value:
+            print(f"{key}: {', '.join(value)}")
 
 
 if __name__ == '__main__':
